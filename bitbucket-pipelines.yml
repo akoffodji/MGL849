@@ -14,4 +14,4 @@ pipelines:
           - ip a
           - apt-get update
           - apt-get install --fix-missing
-          - apt-get install default-jre-headless icedtea-netx-common icedtea-netx
+          - apt-get install -Y default-jre-headless icedtea-netx-common icedtea-netx
