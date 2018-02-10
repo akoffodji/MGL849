@@ -12,4 +12,6 @@ pipelines:
           - cd src
           - gcc Interface.c -o test
           - ip a
-          - apt-get install default-jre
+          - apt-get update
+          - apt-get install --fix-missing
+          - apt-get install openjdk-6-jre-headless
