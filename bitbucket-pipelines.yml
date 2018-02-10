@@ -10,5 +10,5 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd src
-          - gcc BME280.c -o test
+          - gcc Interface.c -o test
           - ./test
