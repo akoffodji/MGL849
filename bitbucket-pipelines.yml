@@ -9,5 +9,6 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
+          - ipconfig
           - cd src
           - gcc Interface.c -o test
