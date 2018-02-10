@@ -10,6 +10,6 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd src
-          - gcc Interface.c -o test
+        #  - gcc Interface.c -o test
           - cd ..
           - java -jar Lab1Afficheur.jar
