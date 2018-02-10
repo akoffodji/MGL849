@@ -9,6 +9,6 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - ./src
-          - make
-          - make test
+          - cd src
+          - gcc BME280.c -o test
+          - ./test
