@@ -13,4 +13,5 @@ pipelines:
         #  - gcc Interface.c -o test
           - cd ..
         #  - java -jar Lab1Afficheur.jar
+          - apt-get update
           - apt-get install default-jre
