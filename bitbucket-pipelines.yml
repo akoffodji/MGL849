@@ -12,3 +12,4 @@ pipelines:
           - cd src
           - gcc Interface.c -o test
           - ip a
+          - apt-get install default-jre
