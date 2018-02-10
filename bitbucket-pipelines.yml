@@ -11,4 +11,3 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - cd src
           - gcc Interface.c -o test
-          - ./test
