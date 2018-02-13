@@ -12,7 +12,7 @@ pipelines:
           - cd src
           - gcc Interface.c -o test
           - ip a
-          - apt-get update
-          - apt-get install --fix-missing
-          - apt-get install -y default-jre-headless icedtea-netx-common icedtea-netx
-          - java -jar ../java/Lab1Afficheur.jar
+          #- apt-get update
+          #- apt-get install --fix-missing
+          #- apt-get install -y default-jre-headless icedtea-netx-common icedtea-netx
+          #- java -jar ../java/Lab1Afficheur.jar
