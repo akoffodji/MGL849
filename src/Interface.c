@@ -2,9 +2,75 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
+#include <sys/types.h>
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
 #include "BME280.c"
+#define LISTEN_BACKLOG 50
+
+struct socketInt
+{
+    int Client;
+    int Server;
+};
+
+
+struct socketInt configuration_server(int PORT)
+/**
+ * @param Server la caracterisation du socket Serveur
+ * @param Client la caracterisation du socket Client qui se connecte au serveur
+ * @param PORT le port sur lequel on se connecte
+ */
+{
+    int socket_error, Client, Server;
+    struct sockaddr_in server_ad, client_ad;
+    socklen_t server_size, client_size;
+    struct socketInt unSocket;
+    
+    Server = socket(AF_INET, SOCK_STREAM, 0);
+    if (Server < 0)
+    {
+        printf("erreur de creation du socket\n");
+        exit(1);
+    }
+    
+    server_size = sizeof(server_ad);
+    client_size = sizeof(client_ad);
+    
+    bzero((char *)&server_ad,sizeof(server_ad));
+    server_ad.sin_family      = AF_INET;
+    server_ad.sin_addr.s_addr = INADDR_ANY;
+    server_ad.sin_port = htons(PORT);
+    
+    
+    bzero((char *)&client_ad,sizeof(client_ad));
+    client_ad.sin_family      = AF_INET;
+    client_ad.sin_addr.s_addr = INADDR_ANY;
+    client_ad.sin_port = htons(PORT);
+    
+    
+    if (bind(Server, (struct sockaddr *)&server_ad, sizeof(server_ad)) < 0)
+    {
+        printf("erreur au bind()\n");
+        exit(1);
+    }
+    
+    
+    if (listen(Server, LISTEN_BACKLOG) < 0)
+    {
+        printf("erreur au listen()\n");
+        exit(1);
+    }
+    
+    printf("Attente d'une connexion du client\n");
+    Client = accept(Server, (struct sockaddr *)&client_ad, &client_size);
+    printf("Un client se connecte avec la socket %d de %s:%d\n \n", Client, inet_ntoa(client_ad.sin_addr),htons(client_ad.sin_port));
+    
+    unSocket.Client = Client;
+    unSocket.Server = Server;
+    
+    return unSocket;
+}
 
 void dataSender()
 {
@@ -97,5 +163,31 @@ void dataSender()
 void main()
 {
     struct charValue oneData;
-    dataSender();
+    //dataSender();
+    
+    int Server, Client;
+    struct socketInt unSocket;
+    double temp_desired;
+    char message[30];
+    
+    // Configuration des socket client et Server
+    unSocket = configuration_server(1717);
+    
+    Client = unSocket.Client;
+    Server = unSocket.Server;
+    
+    while (1)
+    {
+    
+        sleep(1);
+        
+        if (recv(Client, &temp_desired, sizeof(temp_desired), 0) < 0)
+        {
+            printf("erreur au recv()\n");
+        }
+        
+        sprintf(message, "Temperature desired %.2f\n",temp_desired);
+        
+        printf(message);
+    }
 }
