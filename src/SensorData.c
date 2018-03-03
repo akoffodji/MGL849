@@ -1,7 +1,11 @@
+#include <sys/time.h>
+#include <sys/resource.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/socket.h>
 #include<arpa/inet.h> //inet_addr
+#include "BME280.c"
+#define LISTEN_BACKLOG 50
 
 int socketConfiguration(int PORT)
 {
@@ -38,34 +42,22 @@ int socketConfiguration(int PORT)
 
 void main()
 {
-	int socket_temp;
+	int socketBME;
+    struct charValue val;
     
-    socket_temp = socketConfiguration(4599);
+    socketBME = socketConfiguration(4598);
+    
+    setpriority(PRIO_PROCESS, 0, -14);
+    
+    puts("Priority set to -14");
 
     while(1)
     {
-        double d;
-		char temp[20];
-		char input[20];
-
-		printf("\nEnter desired temp [5.00, 30.00]\n");
-		fgets(input, 20, stdin);
-
-		d = atof(input);
-
-		if(d < 5 || d > 30) {
-			printf("\nTemp outside valid interval\n");
-		} else {
-			sprintf(temp, "%.2f", d);
-			printf("\nSending temp: %s\n", temp);
-
-			// TODO Send the temp
-            
-            send(socket_temp, &d, sizeof(d),0);
-            
-            
-		}
+        sleep (3);
+        val = dataReader();
+        send(socketBME, &val, sizeof(val),0);
+        
 	}
 
-	close(socket_temp);
+	close(socketBME);
 }
