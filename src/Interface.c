@@ -1,3 +1,12 @@
+/*! \file Interface.c */
+
+/**
+ * \file Interface.c
+ * \author Jean Jacques Akoffodji
+ * \date 03 Mars 2018
+ * \brief Fichier qui contient la fonction main du programme principale et les fonctions utilisées pour les threads
+ */
+
 #include <semaphore.h>
 #include <pthread.h>
 #include <sched.h>
@@ -7,14 +16,50 @@
 #include "BME280.c"
 #include "SocketImplementation.c"
 
+/**
+ * \var struct charValue dataBME280
+ * \brief Variable globale contenant les données environnementales mesurées.
+ */
 struct charValue dataBME280;
+
+
+/**
+ * \var double globalPower
+ * \brief Variable globale pour la puissance calculée.
+ */
 double globalPower;
+
+
+/**
+ * \var double temperatureDesired
+ * \brief Variable globale pour la température entrée par l'utilisateur.
+ */
 double temperatureDesired;
+
+
+/**
+ * \var sem_t mutex
+ * \brief Variable globale pour la protection des ressources partagées par les threads.
+ */
 sem_t mutex;
+
+
+/**
+ * \var int socketAffichage
+ * \brief Variable globale contenant le socket connecté au programme d'affichage.
+ */
 int socketAffichage;
 
 
+
+/**
+ * \fn void sendTempD (int socket_desc)
+ * \brief Fonction d'envoi de la température désirée et de la puissance calculée au programme d'affichage.
+ */
 void sendTempD (int socket_desc)
+/**
+ * @param socket_desc le socket client connecté au programme d'affichage
+ */
 {
     char message[12];
     
@@ -35,6 +80,10 @@ void sendTempD (int socket_desc)
 }
 
 
+/**
+ * \fn void* socketBME280(void * x)
+ * \brief Fonction associée au thread d'acquisition des données environnementales.
+ */
 void* socketBME280(void * x)
 {
     char message[30];
@@ -65,7 +114,10 @@ void* socketBME280(void * x)
     }
 }
 
-
+/**
+ * \fn void* affichageBME280(void * x)
+ * \brief Fonction associée au thread d'envoi périodique des données environnementales au programme d'affichage.
+ */
 void* affichageBME280(void * x)
 {
     char message[15];
@@ -103,6 +155,11 @@ void* affichageBME280(void * x)
     }
 }
 
+
+/**
+ * \fn void* affichageTempDesired(void * x)
+ * \brief Fonction associée au thread d'envoi périodique de la température désirée au programme d'affichage.
+ */
 void* affichageTempDesired(void * x)
 {
     char message[15];
@@ -131,6 +188,11 @@ void* affichageTempDesired(void * x)
 }
 
 
+
+/**
+ * \fn void powerCalculation()
+ * \brief Fonction de calcul de la puissance nécessaire.
+ */
 void powerCalculation()
 {
     globalPower = ((temperatureDesired-dataBME280.Temp)/6)*100;
@@ -146,6 +208,11 @@ void powerCalculation()
     }
 }
 
+
+/**
+ * \fn void* socketTempDesired(void * x)
+ * \brief Fonction associée au thread de reception de la température désirée entrée par l'utilisateur.
+ */
 void* socketTempDesired(void * x)
 {
     char message[30];
@@ -179,9 +246,6 @@ void* socketTempDesired(void * x)
         sem_post(&mutex);
     }
 }
-
-
-
 
 
 void main()

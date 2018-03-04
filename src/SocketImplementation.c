@@ -1,3 +1,9 @@
+/**
+ * \file SocketImplementation.c
+ * \author Jean Jacques Akoffodji
+ * \date 03 Mars 2018
+ * \brief Fichier qui contient l'implémentation des fonctions de configuration pour le socket
+ */
 #include <sys/time.h>
 #include <sys/resource.h>
 #include<stdio.h>
@@ -7,15 +13,28 @@
 
 #define LISTEN_BACKLOG 50
 
+
+
+/**
+ * \struct socketInt
+ * \brief Structure de données pour la configuration du socket
+ */
 struct socketInt
 {
-    int Client;
-    int Server;
+    int Client; /*!< Entier correspondant au socket client. */
+    int Server; /*!< Entier correspondant au socket serveur. */
 };
 
+
+
+/**
+ * \fn int socketConfiguration(int PORT)
+ * \brief Fonction de configuration d'un socket client en localhost
+ */
 int socketConfiguration(int PORT)
 /**
  * @param PORT le port sur lequel on se connecte
+ * /return socket_desc le socket client
  */
 {
     int socket_desc;
@@ -49,9 +68,15 @@ int socketConfiguration(int PORT)
     return socket_desc;
 }
 
+
+/**
+ * \fn struct socketInt configuration_server(int PORT)
+ * \brief Fonction de configuration d'un socket serveur en localhost
+ */
 struct socketInt configuration_server(int PORT)
 /**
  * @param PORT le port sur lequel on se connecte
+ * /return unSocket la structure de données contenant les socket serveur et client
  */
 {
     int socket_error, Client, Server;

@@ -1,3 +1,10 @@
+/**
+ * \file DesiredTemp.c
+ * \author Jean Jacques Akoffodji
+ * \date 03 Mars 2018
+ * \brief Fichier qui contient la fonction main du programme dédié à lecture de la température désirée entrée par l'utilisateur
+ */
+
 #include "SocketImplementation.c"
 
 void main()

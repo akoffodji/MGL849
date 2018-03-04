@@ -1,3 +1,11 @@
+/**
+ * \file SensorData.c
+ * \author Jean Jacques Akoffodji
+ * \date 03 Mars 2018
+ * \brief Fichier qui contient la fonction main du programme dédié à l'aquisition de données du BME280
+ */
+
+
 #include "BME280.c"
 #include "SocketImplementation.c"
 

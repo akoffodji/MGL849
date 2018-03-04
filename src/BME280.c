@@ -1,8 +1,13 @@
-// Distributed with a free-will license.
-// Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
-// BME280
-// This code is designed to work with the BME280_I2CS I2C Mini Module available from ControlEverything.com.
-// https://www.controleverything.com/content/Humidity?sku=BME280_I2CS#tabs-0-product_tabset-2
+/**
+ * \file BME280.c
+ * \author Jean Jacques Akoffodji
+ * \date 03 Mars 2018
+ *
+ * Distributed with a free-will license.
+ * Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
+ * This code is designed to work with the BME280_I2CS I2C Mini Module available from ControlEverything.com.
+ * \brief Fichier modifié qui contient l'implémentation des fonctions pour le senseur BME280
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,15 +16,23 @@
 #include <fcntl.h>
 
 
-
+/**
+ * \struct charValue
+ * \brief Structure de données qui contient les données environnementales mesurées par le BME280
+ */
 struct charValue
 {
-    float Temp;
-    float Pressure;
-    float Humidity;
+    float Temp; /*!< Température ambiante mesurée. */
+    float Pressure; /*!< Pression locale mesurée. */
+    float Humidity; /*!< Humidité mesurée. */
 };
 
 
+/**
+ * \fn struct charValue dataReader()
+ * \brief Fonction de lecture des données environnementales à partir du BME280
+ * \return oneData structure de données les mesures du BME280
+ */
 struct charValue dataReader()
 {
     struct charValue oneData;
@@ -198,19 +211,13 @@ struct charValue dataReader()
         {
             humidity = 0.0;
         }
-    
-    //snprintf(oneData.Temp, 7, "%.2f", cTemp);
-    
-    //puts(oneData.Temp);
+
     
     oneData.Temp = cTemp;
     oneData.Pressure = pressure;
     oneData.Humidity = humidity;
     return(oneData);
-    // Output data to screen
-    //printf("Temperature in Celsius : %.2f C \n", cTemp);
-    //printf("Pressure : %.2f Pa \n", pressure);
-    //printf("Relative Humidity : %.2f RH \n", humidity);
+
 }
 
 
