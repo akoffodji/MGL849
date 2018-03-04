@@ -8,10 +8,6 @@ void main()
     struct charValue val;
     
     socketBME = socketConfiguration(4598);
-    
-    setpriority(PRIO_PROCESS, 0, -14);
-    
-    puts("Priority set to -14");
 
     while(1)
     {
