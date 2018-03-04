@@ -1,38 +1,25 @@
-#include <sys/time.h>
-#include <sys/resource.h>
 #include <semaphore.h>
 #include <pthread.h>
-#include<stdio.h>
-#include<stdlib.h>
+#include <sched.h>
 #include<unistd.h>
 #include<string.h>
 #include <sys/types.h>
-#include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
 #include "BME280.c"
-#define LISTEN_BACKLOG 50
+#include "SocketImplementation.c"
 
 struct charValue dataBME280;
 double globalPower;
 double temperatureDesired;
 sem_t mutex;
 int socketAffichage;
-//boolean temperatureChange;
 
-struct socketInt
-{
-    int Client;
-    int Server;
-};
+
 
 int socketConfiguration(int PORT)
 {
     int socket_desc;
     struct sockaddr_in server;
     
-    
-    
-    //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
@@ -58,60 +45,6 @@ int socketConfiguration(int PORT)
     return socket_desc;
 }
 
-struct socketInt configuration_server(int PORT)
-/**
- * @param PORT le port sur lequel on se connecte
- */
-{
-    int socket_error, Client, Server;
-    struct sockaddr_in server_ad, client_ad;
-    socklen_t server_size, client_size;
-    struct socketInt unSocket;
-    
-    Server = socket(AF_INET, SOCK_STREAM, 0);
-    if (Server < 0)
-    {
-        printf("erreur de creation du socket\n");
-        exit(1);
-    }
-    
-    server_size = sizeof(server_ad);
-    client_size = sizeof(client_ad);
-    
-    bzero((char *)&server_ad,sizeof(server_ad));
-    server_ad.sin_family      = AF_INET;
-    server_ad.sin_addr.s_addr = INADDR_ANY;
-    server_ad.sin_port = htons(PORT);
-    
-    
-    bzero((char *)&client_ad,sizeof(client_ad));
-    client_ad.sin_family      = AF_INET;
-    client_ad.sin_addr.s_addr = INADDR_ANY;
-    client_ad.sin_port = htons(PORT);
-    
-    
-    if (bind(Server, (struct sockaddr *)&server_ad, sizeof(server_ad)) < 0)
-    {
-        printf("erreur au bind()\n");
-        exit(1);
-    }
-    
-    
-    if (listen(Server, LISTEN_BACKLOG) < 0)
-    {
-        printf("erreur au listen()\n");
-        exit(1);
-    }
-    
-    printf("Attente d'une connexion du client\n");
-    Client = accept(Server, (struct sockaddr *)&client_ad, &client_size);
-    printf("Un client se connecte avec la socket %d de %s:%d\n \n", Client, inet_ntoa(client_ad.sin_addr),htons(client_ad.sin_port));
-    
-    unSocket.Client = Client;
-    unSocket.Server = Server;
-    
-    return unSocket;
-}
 
 
 void sendTempD (int socket_desc)
@@ -141,6 +74,11 @@ void* socketBME280(void * x)
     struct socketInt socketBME;
     socketBME = configuration_server(4598);
     
+    struct sched_param param;
+    
+    param.sched_priority = 3;
+    sched_setscheduler(0, SCHED_FIFO, &param);
+    
     while (1)
     {
         
@@ -164,8 +102,11 @@ void* socketBME280(void * x)
 void* affichageBME280(void * x)
 {
     char message[15];
-    //int socketBME;
-    //socketBME = socketConfiguration(1237);
+    
+    struct sched_param param;
+    
+    param.sched_priority = 2;
+    sched_setscheduler(0, SCHED_FIFO, &param);
     
     while (1)
     {
@@ -198,6 +139,11 @@ void* affichageBME280(void * x)
 void* affichageTempDesired(void * x)
 {
     char message[15];
+    
+    struct sched_param param;
+    
+    param.sched_priority = 1;
+    sched_setscheduler(0, SCHED_FIFO, &param);
     
     while (1)
     {
@@ -239,7 +185,10 @@ void* socketTempDesired(void * x)
     struct socketInt socketTemp;
     double oneTemp;
     socketTemp = configuration_server(4599);
+    struct sched_param param;
     
+    param.sched_priority = 4;
+    sched_setscheduler(0, SCHED_FIFO, &param);
     
     sleep(1);
     
@@ -270,27 +219,37 @@ void* socketTempDesired(void * x)
 
 void main()
 {
+    
     struct charValue oneData;
     int Server, Client;
     struct socketInt socketTemp, socketBME;
     double temp_desired;
     double powerNeed;
-    char message[30];
+    char message[50];
     struct charValue val;
+    
+
     
     pthread_t threadBME;
     pthread_t threadTempD;
     pthread_t threadAffichage;
     pthread_t threadAffichageTempD;
+
     
     sem_init(&mutex,0,1);
     
+    
     socketAffichage = socketConfiguration(1234);
     
+    
     pthread_create(&threadBME,NULL,socketBME280,NULL);
+    
     pthread_create(&threadTempD,NULL,socketTempDesired,NULL);
+    
     pthread_create(&threadAffichage,NULL,affichageBME280,NULL);
+    
     pthread_create(&threadAffichageTempD,NULL,affichageTempDesired,NULL);
+    
     
     pthread_join(threadBME,NULL);
     pthread_join(threadTempD,NULL);

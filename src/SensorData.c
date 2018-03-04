@@ -1,44 +1,6 @@
-#include <sys/time.h>
-#include <sys/resource.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
 #include "BME280.c"
-#define LISTEN_BACKLOG 50
+#include "SocketImplementation.c"
 
-int socketConfiguration(int PORT)
-{
-    int socket_desc;
-    struct sockaddr_in server;
-    
-    
-    
-    //Create socket
-    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_desc == -1)
-    {
-        printf("Could not create socket");
-    }
-    else
-    {
-        puts("Socket created");
-    }
-    
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_family = AF_INET;
-    server.sin_port = htons(PORT);
-    
-    //Connect to remote server
-    if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        puts("connect error");
-    }
-    
-    puts("Connected");
-    
-    return socket_desc;
-}
 
 void main()
 {
