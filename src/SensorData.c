@@ -15,7 +15,8 @@ void main()
 
     while(1)
     {
-        sleep (3);
+        
+        sleep(1);
         val = dataReader();
         send(socketBME, &val, sizeof(val),0);
         

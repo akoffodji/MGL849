@@ -14,39 +14,6 @@ sem_t mutex;
 int socketAffichage;
 
 
-
-int socketConfiguration(int PORT)
-{
-    int socket_desc;
-    struct sockaddr_in server;
-    
-    socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_desc == -1)
-    {
-        printf("Could not create socket");
-    }
-    else
-    {
-        puts("Socket created");
-    }
-    
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_family = AF_INET;
-    server.sin_port = htons(PORT);
-    
-    //Connect to remote server
-    if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        puts("connect error");
-    }
-    
-    puts("Connected");
-    
-    return socket_desc;
-}
-
-
-
 void sendTempD (int socket_desc)
 {
     char message[12];
