@@ -12,7 +12,7 @@ pipelines:
           - cd src
           - gcc -pthread Interface.c -o execInterface
           - gcc SensorData.c -o execSensor
-          - gcc TempDesired.c -o execUser
+          - gcc DesiredTemp.c -o execUser
           
           #- apt-get update
           #- apt-get install --fix-missing
