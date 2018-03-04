@@ -10,8 +10,10 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd src
-          - gcc -pthread Interface.c -o test
-          - ip a
+          - gcc -pthread Interface.c -o execInterface
+          - gcc SensorData.c -o execSensor
+          - gcc TempDesired.c -o execUser
+          
           #- apt-get update
           #- apt-get install --fix-missing
           #- apt-get install -y default-jre-headless icedtea-netx-common icedtea-netx
