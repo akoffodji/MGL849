@@ -10,7 +10,7 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - cd src
-          - gcc Interface.c -o test
+          - gcc -pthread Interface.c -o test
           - ip a
           #- apt-get update
           #- apt-get install --fix-missing
