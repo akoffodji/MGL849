@@ -8,6 +8,7 @@
 2. Faire les commandes suivantes:
 
         $ git clone https://akoffodji@bitbucket.org/akoffodji/mgl849.git
+		$ cd mgl849/
         $ cd src/
 		$ gcc SensorData.c -o excecutableSensor
 		$ gcc DesiredTemp.c -o excecutableUser
